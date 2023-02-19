@@ -19,38 +19,27 @@ func main() {
 	} else if len(members) < 3 {
 		log.Panicln(errors.New("Вывод ошибки, так как строка не является математической операцией."))
 	}
-	op := members[1]
-
-	romanCount := 0
-	num1, err := strconv.Atoi(members[0])
-	if err != nil {
-		romanCount += 1
-	}
-	num2, err := strconv.Atoi(members[2])
-	if err != nil {
-		romanCount += 1
-	}
-	if romanCount == 1 {
-		log.Panicln(errors.New("Вывод ошибки, так как используются одновременно разные системы счисления."))
-	} else if romanCount == 2 {
-		num1 = toDecimal(members[0])
-		num2 = toDecimal(members[2])
-	}
-
-	if !(1 <= num1 && num1 <= 10 && 1 <= num2 && num2 <= 10) {
-		log.Panicln(errors.New("Вывод ошибки, так как входные числа не в диапазоне 1 - 10."))
-	}
+	var romanCount int
 
 	var res int
-	if op == "+" {
+	switch op := members[1]; op {
+	case "+":
+		var num1, num2 int
+		num1, num2, romanCount = handleNumbers(members[0], members[2])
 		res = num1 + num2
-	} else if op == "-" {
+	case "-":
+		var num1, num2 int
+		num1, num2, romanCount = handleNumbers(members[0], members[2])
 		res = num1 - num2
-	} else if op == "*" {
+	case "*":
+		var num1, num2 int
+		num1, num2, romanCount = handleNumbers(members[0], members[2])
 		res = num1 * num2
-	} else if op == "/" {
+	case "/":
+		var num1, num2 int
+		num1, num2, romanCount = handleNumbers(members[0], members[2])
 		res = num1 / num2
-	} else {
+	default:
 		log.Panicln(errors.New("Вывод ошибки, так как строка не является математической операцией."))
 	}
 
@@ -81,6 +70,29 @@ var dictionary = []struct {
 	{1, "I"},
 }
 
+func handleNumbers(text1 string, text2 string) (int, int, int) {
+	romanCount := 0
+
+	num1, err := strconv.Atoi(text1)
+	if err != nil {
+		romanCount += 1
+	}
+	num2, err := strconv.Atoi(text2)
+	if err != nil {
+		romanCount += 1
+	}
+	if romanCount == 1 {
+		log.Panicln(errors.New("Вывод ошибки, так как используются одновременно разные системы счисления."))
+	} else if romanCount == 2 {
+		num1 = toDecimal(text1)
+		num2 = toDecimal(text2)
+	}
+	fmt.Println(num2, num1)
+	if !(1 <= num1 && num1 <= 10 && 1 <= num2 && num2 <= 10) {
+		log.Panicln(errors.New("Вывод ошибки, так как входные числа не в диапазоне 1 - 10."))
+	}
+	return num1, num2, romanCount
+}
 func toDecimal(num string) int {
 	decimal := 0
 	for i := 0; i < len(num); i++ {
