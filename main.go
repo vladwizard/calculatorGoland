@@ -19,31 +19,24 @@ func main() {
 	} else if len(members) < 3 {
 		log.Panicln(errors.New("Вывод ошибки, так как строка не является математической операцией."))
 	}
-	var romanCount int
+
+	num1, num2, isRoman := handleNumbers(members[0], members[2])
 
 	var res int
 	switch op := members[1]; op {
 	case "+":
-		var num1, num2 int
-		num1, num2, romanCount = handleNumbers(members[0], members[2])
 		res = num1 + num2
 	case "-":
-		var num1, num2 int
-		num1, num2, romanCount = handleNumbers(members[0], members[2])
 		res = num1 - num2
 	case "*":
-		var num1, num2 int
-		num1, num2, romanCount = handleNumbers(members[0], members[2])
 		res = num1 * num2
 	case "/":
-		var num1, num2 int
-		num1, num2, romanCount = handleNumbers(members[0], members[2])
 		res = num1 / num2
 	default:
 		log.Panicln(errors.New("Вывод ошибки, так как строка не является математической операцией."))
 	}
 
-	if romanCount == 2 {
+	if isRoman {
 		if res == 0 {
 			log.Panicln(errors.New("Вывод ошибки, так как в римской системе нет нуля."))
 		} else if res < 0 {
@@ -56,8 +49,8 @@ func main() {
 }
 
 var dictionary = []struct {
-	value int
-	digit string
+	decimal int
+	roman   string
 }{
 	{100, "C"},
 	{90, "XC"},
@@ -70,9 +63,17 @@ var dictionary = []struct {
 	{1, "I"},
 }
 
-func handleNumbers(text1 string, text2 string) (int, int, int) {
-	romanCount := 0
+func getDecimal(romanDigit string) int {
+	for _, el := range dictionary {
+		if el.roman == romanDigit {
+			return el.decimal
+		}
+	}
+	return 0
+}
 
+func handleNumbers(text1 string, text2 string) (int, int, bool) {
+	romanCount := 0
 	num1, err := strconv.Atoi(text1)
 	if err != nil {
 		romanCount += 1
@@ -87,38 +88,34 @@ func handleNumbers(text1 string, text2 string) (int, int, int) {
 		num1 = toDecimal(text1)
 		num2 = toDecimal(text2)
 	}
-	fmt.Println(num2, num1)
 	if !(1 <= num1 && num1 <= 10 && 1 <= num2 && num2 <= 10) {
 		log.Panicln(errors.New("Вывод ошибки, так как входные числа не в диапазоне 1 - 10."))
 	}
-	return num1, num2, romanCount
+	return num1, num2, romanCount != 0
 }
 func toDecimal(num string) int {
 	decimal := 0
-	for i := 0; i < len(num); i++ {
-		if num[i] == 'I' && i+1 != len(num) && num[i+1] == 'V' {
+	i := 0
+	for ; i < len(num)-1; i++ {
+		if num[i] == 'I' && num[i+1] == 'V' {
 			decimal += 4
 			i++
-		} else if num[i] == 'I' && i+1 != len(num) && num[i+1] == 'X' {
+		} else if num[i] == 'I' && num[i+1] == 'X' {
 			decimal += 9
 			i++
 		} else {
-			for _, el := range dictionary {
-				if el.digit == string(num[i]) {
-					decimal += el.value
-					break
-				}
-			}
+			decimal += getDecimal(string(num[i]))
 		}
 	}
+	decimal += getDecimal(string(num[i]))
 	return decimal
 }
 func toRoman(num int) string {
 	roman := ""
 	for _, val := range dictionary {
-		for num >= val.value {
-			roman += val.digit
-			num -= val.value
+		for num >= val.decimal {
+			roman += val.roman
+			num -= val.decimal
 		}
 	}
 	return roman
