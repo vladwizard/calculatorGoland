@@ -63,7 +63,7 @@ var dictionary = []struct {
 	{1, "I"},
 }
 
-func getDecimal(romanDigit string) int {
+func findInDictionary(romanDigit string) int {
 	for _, el := range dictionary {
 		if el.roman == romanDigit {
 			return el.decimal
@@ -104,10 +104,10 @@ func toDecimal(num string) int {
 			decimal += 9
 			i++
 		} else {
-			decimal += getDecimal(string(num[i]))
+			decimal += findInDictionary(string(num[i]))
 		}
 	}
-	decimal += getDecimal(string(num[i]))
+	decimal += findInDictionary(string(num[i]))
 	return decimal
 }
 func toRoman(num int) string {
