@@ -12,39 +12,41 @@ import (
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	input, _ := reader.ReadString('\n')
-	members := strings.Fields(input)
-	if len(members) > 3 {
-		log.Panicln(errors.New("Вывод ошибки, так как формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *)."))
-	} else if len(members) < 3 {
-		log.Panicln(errors.New("Вывод ошибки, так как строка не является математической операцией."))
-	}
-
-	num1, num2, isRoman := handleNumbers(members[0], members[2])
-
-	var res int
-	switch op := members[1]; op {
-	case "+":
-		res = num1 + num2
-	case "-":
-		res = num1 - num2
-	case "*":
-		res = num1 * num2
-	case "/":
-		res = num1 / num2
-	default:
-		log.Panicln(errors.New("Вывод ошибки, так как строка не является математической операцией."))
-	}
-
-	if isRoman {
-		if res == 0 {
-			log.Panicln(errors.New("Вывод ошибки, так как в римской системе нет нуля."))
-		} else if res < 0 {
-			log.Panicln(errors.New("Вывод ошибки, так как в римской системе нет отрицательных чисел."))
+	for {
+		input, _ := reader.ReadString('\n')
+		members := strings.Fields(input)
+		if len(members) > 3 {
+			log.Panicln(errors.New("Вывод ошибки, так как формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *)."))
+		} else if len(members) < 3 {
+			log.Panicln(errors.New("Вывод ошибки, так как строка не является математической операцией."))
 		}
-		fmt.Println(toRoman(res))
-	} else {
-		fmt.Println(res)
+
+		num1, num2, isRoman := handleNumbers(members[0], members[2])
+
+		var res int
+		switch op := members[1]; op {
+		case "+":
+			res = num1 + num2
+		case "-":
+			res = num1 - num2
+		case "*":
+			res = num1 * num2
+		case "/":
+			res = num1 / num2
+		default:
+			log.Panicln(errors.New("Вывод ошибки, так как строка не является математической операцией."))
+		}
+
+		if isRoman {
+			if res == 0 {
+				log.Panicln(errors.New("Вывод ошибки, так как в римской системе нет нуля."))
+			} else if res < 0 {
+				log.Panicln(errors.New("Вывод ошибки, так как в римской системе нет отрицательных чисел."))
+			}
+			fmt.Println(toRoman(res))
+		} else {
+			fmt.Println(res)
+		}
 	}
 }
 
